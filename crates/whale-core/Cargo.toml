@@ -1,0 +1,12 @@
+[package]
+name = "whale-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+chrono.workspace = true
+chrono-tz.workspace = true
+serde.workspace = true
+whale-protocol = { path = "../whale-protocol" }

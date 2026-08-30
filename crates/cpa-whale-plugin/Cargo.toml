@@ -1,0 +1,25 @@
+[package]
+name = "cpa-whale-plugin"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+base64.workspace = true
+chrono.workspace = true
+chrono-tz.workspace = true
+crossbeam-channel.workspace = true
+parking_lot.workspace = true
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+sha2.workspace = true
+subtle.workspace = true
+uuid.workspace = true
+whale-core = { path = "../whale-core" }
+whale-protocol = { path = "../whale-protocol" }

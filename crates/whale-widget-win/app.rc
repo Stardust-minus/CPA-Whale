@@ -1,0 +1,2 @@
+#define IDI_CPA_WHALE 1
+IDI_CPA_WHALE ICON "../../assets/CPAWhale.ico"

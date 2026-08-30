@@ -1,0 +1,14 @@
+# Merge this fragment into the existing CLIProxyAPI Compose service.
+# Keep the image, ports, environment and command from the upstream deployment.
+services:
+  cli-proxy-api:
+    volumes:
+      - ./cpa-plugins:/var/lib/cliproxyapi/plugins
+      - ./cpa-whale-data:/var/lib/cliproxyapi/whale
+
+# The matching CLIProxyAPI configuration must contain:
+# plugins:
+#   enabled: true
+#   dir: /var/lib/cliproxyapi/plugins
+#   configs:
+#     cpa-whale: ...

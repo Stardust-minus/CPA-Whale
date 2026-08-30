@@ -1,0 +1,7 @@
+target
+build-output
+dist
+.git
+*.db
+*.db-shm
+*.db-wal

@@ -1,0 +1,32 @@
+# Optional pricing fragment for deployments that expose these exact model IDs.
+# USD values are standard API equivalents, not a CPA/Codex invoice.
+pricing:
+  version: gpt-5.6-standard-user-2026-08-30
+  rates:
+    - provider: codex
+      models: [gpt-5.6-sol]
+      display-name: Sol
+      priority: 10
+      input-usd-per-million: 5.0
+      cache-read-usd-per-million: 0.5
+      cache-write-usd-per-million: 5.0
+      output-usd-per-million: 30.0
+      reasoning-usd-per-million: 30.0
+    - provider: codex
+      models: [gpt-5.6-terra]
+      display-name: Terra
+      priority: 10
+      input-usd-per-million: 2.0
+      cache-read-usd-per-million: 2.0
+      cache-write-usd-per-million: 2.0
+      output-usd-per-million: 12.0
+      reasoning-usd-per-million: 12.0
+    - provider: codex
+      models: [gpt-5.6-luna]
+      display-name: Luna
+      priority: 10
+      input-usd-per-million: 0.2
+      cache-read-usd-per-million: 0.2
+      cache-write-usd-per-million: 0.2
+      output-usd-per-million: 1.2
+      reasoning-usd-per-million: 1.2

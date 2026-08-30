@@ -1,0 +1,36 @@
+{
+  "Provider": "codex",
+  "ExecutorType": "codex",
+  "Model": "gpt-5.6-sol",
+  "Alias": "gpt-5.6-sol",
+  "APIKey": "must-not-be-persisted",
+  "AuthID": "must-not-be-persisted",
+  "AuthIndex": "auth-example-a",
+  "AuthType": "oauth",
+  "Source": "codex",
+  "ReasoningEffort": "xhigh",
+  "ServiceTier": "default",
+  "Generate": true,
+  "RequestedAt": "2026-08-30T00:00:00Z",
+  "Latency": 1500000000,
+  "TTFT": 250000000,
+  "Failed": false,
+  "Failure": {"StatusCode": 0, "Body": "must-not-be-persisted"},
+  "Detail": {
+    "InputTokens": 1000,
+    "OutputTokens": 500,
+    "ReasoningTokens": 200,
+    "CachedTokens": 400,
+    "CacheReadTokens": 400,
+    "CacheCreationTokens": 0,
+    "TotalTokens": 1500
+  },
+  "ResponseHeaders": {
+    "X-Codex-Plan-Type": ["pro"],
+    "X-Codex-Active-Limit": ["premium"],
+    "X-Codex-Primary-Used-Percent": ["42"],
+    "X-Codex-Primary-Window-Minutes": ["300"],
+    "X-Codex-Primary-Reset-After-Seconds": ["1200"],
+    "X-Codex-Credits-Balance": ["5"]
+  }
+}

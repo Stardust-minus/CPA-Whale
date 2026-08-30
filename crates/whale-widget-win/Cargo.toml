@@ -1,0 +1,24 @@
+[package]
+name = "whale-widget-win"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "cpa-whale"
+path = "src/main.rs"
+
+[dependencies]
+base64.workspace = true
+chrono.workspace = true
+image.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+whale-core = { path = "../whale-core" }
+whale-protocol = { path = "../whale-protocol" }
+
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true
+windows-numerics.workspace = true
+windows-sys.workspace = true

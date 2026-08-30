@@ -1,0 +1,71 @@
+plugins:
+  enabled: true
+  dir: /var/lib/cliproxyapi/plugins
+  configs:
+    cpa-whale:
+      config-version: 2
+      enabled: true
+      priority: 10
+
+      storage:
+        database: /var/lib/cliproxyapi/whale/metrics.db
+        timezone: UTC
+        raw-events-retention-days: 7
+        daily-retention-days: 90
+        queue-capacity: 4096
+
+      api:
+        # Generate with: cpa-whale-admin token generate
+        # Store only SHA-256 digests here. Each client can have its own token.
+        read-tokens:
+          - id: desktop
+            sha256: REPLACE_WITH_SHA256_FROM_GENERATOR
+
+      instance:
+        display-name: CLIProxyAPI
+        scope-label: CLIProxyAPI
+        supports-user-attribution: false
+        poll-interval-seconds: 60
+        # Empty values let the client choose from observed capabilities.
+        focus-model:
+        focus-reasoning-effort:
+        cards:
+          - today
+          - startup
+          - models
+          - quota
+          - service-status
+          - entertainment
+        model-display-names: {}
+
+      quota:
+        adapters:
+          - adapter: codex-response-headers
+            enabled: true
+            providers: [codex]
+        account-visibility:
+          require-available: true
+          exclude-unavailable-accounts: true
+          include-providers: []
+          include-plan-types: []
+          include-active-limits: []
+
+      # USD values are optional standard-API equivalents, not provider bills.
+      # Rates use exact provider/model/alias matches and never update automatically.
+      pricing:
+        version: ""
+        rates: []
+
+      # Third-party network requests are opt-in in config v2.
+      signals:
+        enabled: false
+        sources: []
+
+        # Example official Statuspage-compatible source:
+        # sources:
+        #   - id: provider-status
+        #     enabled: true
+        #     adapter: statuspage-v2
+        #     display-name: Provider Status
+        #     url: https://status.example.com/api/v2/summary.json
+        #     interval-seconds: 300
