@@ -206,7 +206,6 @@ tests/                   # ABI harness 和外部信号 fixtures
 - 当前 quota adapter 只实现 Codex response headers；其他 provider 需要新增 adapter
 - community intelligence/reset 信息不是官方服务承诺
 - Windows EXE 当前未签名，公开测试版可能触发 SmartScreen
-- Windows 自绘数据设置和连接流程仍需在真实 Windows 环境完成最终视觉验收
 
 ## 许可证
 
