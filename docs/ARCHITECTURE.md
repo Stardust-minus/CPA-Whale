@@ -37,9 +37,9 @@ Linux operator
 
 ## Version boundaries
 
-CPA Whale v0.3.0 uses separate compatibility numbers:
+CPA Whale v0.3.1 uses separate compatibility numbers:
 
-- application bundle version: `0.3.0`
+- application bundle version: `0.3.1`
 - CPA plugin C ABI: `1`
 - CPA JSON lifecycle schema: `4`
 - snapshot API schema: `1`
@@ -47,7 +47,7 @@ CPA Whale v0.3.0 uses separate compatibility numbers:
 - plugin config schema: `2`
 - SQLite `PRAGMA user_version`: `2`
 
-The snapshot DTO remains backward compatible with the v0.2.6 client. A v0.3.0 client first requests capabilities; if an older plugin has no route, it synthesizes legacy capabilities from snapshot models, accounts and signals.
+The snapshot DTO remains backward compatible with the v0.2.6 client. A v0.3.x client first requests capabilities; if an older plugin has no route, it synthesizes legacy capabilities from snapshot models, accounts and signals.
 
 ## Plugin lifecycle
 
@@ -122,6 +122,8 @@ codex-response-headers
 It normalizes safe `X-Codex-*` fields into provider-neutral `QuotaSnapshot` and `QuotaWindow` DTOs. Provider, plan and active-limit filters belong to deployment config, not Windows client code.
 
 Future providers require a new tested adapter; arbitrary user-defined header expressions are intentionally unsupported.
+
+For the account-level remaining quota shown by the Windows client, an exact credential-level `primary` window is preferred. Namespaced windows such as `bengalfox primary` are model/additional limits and remain available in the API, but are not mixed into the account's headline remaining percentage. The UI labels the value as remaining rather than mirroring a management page that may label the complementary used percentage.
 
 ## Signal adapters
 

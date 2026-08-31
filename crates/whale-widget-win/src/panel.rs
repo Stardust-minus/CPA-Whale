@@ -13,8 +13,8 @@ use windows_sys::Win32::UI::WindowsAndMessaging::*;
 
 use crate::graphics::{DataSettingsPanelData, DetailsPanelData, MenuPanelData, PanelRenderer};
 use crate::model::{
-    card_enabled, estimated_today_usd_micros, format_tokens, format_usd, model_display_name,
-    ClientSettings,
+    account_primary_remaining_percent, card_enabled, estimated_today_usd_micros, format_tokens,
+    format_usd, model_display_name, ClientSettings,
 };
 
 pub const WM_MENU_ACTION: u32 = WM_APP + 30;
@@ -801,14 +801,9 @@ fn details_rows(state: &DetailsState) -> Vec<String> {
             .iter()
             .filter(|account| account.quota.available)
             .map(|account| {
-                let remaining = account
-                    .quota
-                    .windows
-                    .iter()
-                    .filter_map(|window| window.remaining_percent)
-                    .reduce(f64::min)
-                    .map(|value| format!("{value:.0}%"))
-                    .unwrap_or_else(|| "额度 --".into());
+                let remaining = account_primary_remaining_percent(account)
+                    .map(|value| format!("剩余 {value:.0}%"))
+                    .unwrap_or_else(|| "剩余 --".into());
                 format!("{} · {}", account.label, remaining)
             })
             .collect(),

@@ -6,12 +6,12 @@ Verified development baseline: CLIProxyAPI v7.2.145 with dynamic C-ABI plugin su
 
 ## Release files
 
-A v0.3.0 release bundle contains:
+A v0.3.1 release bundle contains:
 
 ```text
-cpa-whale-plugin-v0.3.0-linux-amd64.so
-cpa-whale-admin-v0.3.0-linux-amd64
-cpa-whale-v0.3.0-windows-x64.exe
+cpa-whale-plugin-v0.3.1-linux-amd64.so
+cpa-whale-admin-v0.3.1-linux-amd64
+cpa-whale-v0.3.1-windows-x64.exe
 plugin-config.example.yaml
 docker-compose.fragment.yaml
 release-manifest.json
@@ -23,7 +23,7 @@ Verify `SHA256SUMS` before installation. Do not use an unverified `curl | sh` pi
 ## 1. Preflight
 
 ```bash
-./cpa-whale-admin-v0.3.0-linux-amd64 check \
+./cpa-whale-admin-v0.3.1-linux-amd64 check \
   --config /etc/cliproxyapi/config.yaml
 ```
 
@@ -41,7 +41,7 @@ It does not modify the host.
 ## 2. Generate a client token
 
 ```bash
-./cpa-whale-admin-v0.3.0-linux-amd64 token generate \
+./cpa-whale-admin-v0.3.1-linux-amd64 token generate \
   --endpoint https://your-cpa.example
 ```
 
@@ -69,7 +69,7 @@ Removing one entry revokes only that client after plugin reconfiguration/reload.
 ## 3. Render a config fragment
 
 ```bash
-./cpa-whale-admin-v0.3.0-linux-amd64 config render \
+./cpa-whale-admin-v0.3.1-linux-amd64 config render \
   --token-id desktop \
   --token-sha256 "$WHALE_READ_TOKEN_SHA256" \
   --database /var/lib/cliproxyapi/whale/metrics.db \
@@ -97,8 +97,8 @@ Config v2 defaults third-party signals to disabled. The optional GPT-5.6 pricing
 ## 4. Install the plugin file
 
 ```bash
-sudo ./cpa-whale-admin-v0.3.0-linux-amd64 install \
-  --plugin ./cpa-whale-plugin-v0.3.0-linux-amd64.so \
+sudo ./cpa-whale-admin-v0.3.1-linux-amd64 install \
+  --plugin ./cpa-whale-plugin-v0.3.1-linux-amd64.so \
   --config /etc/cliproxyapi/config.yaml \
   --database /var/lib/cliproxyapi/whale/metrics.db
 ```
@@ -194,7 +194,7 @@ The Management Key is not accepted as a substitute by the Windows client and mus
 
 ```bash
 WHALE_READ_TOKEN='<raw token>' \
-./cpa-whale-admin-v0.3.0-linux-amd64 doctor \
+./cpa-whale-admin-v0.3.1-linux-amd64 doctor \
   --endpoint https://your-cpa.example
 ```
 
@@ -236,7 +236,7 @@ SQLite uses explicit `PRAGMA user_version` migrations. A failed migration reject
 First disable or switch the active plugin through the existing Management workflow. Then:
 
 ```bash
-sudo ./cpa-whale-admin-v0.3.0-linux-amd64 rollback \
+sudo ./cpa-whale-admin-v0.3.1-linux-amd64 rollback \
   --manifest /var/lib/cliproxyapi/whale/install-manifest.json
 ```
 

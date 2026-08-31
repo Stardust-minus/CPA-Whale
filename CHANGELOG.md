@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.3.1 — 2026-08-31
+
+Patch release for account quota presentation.
+
+### Fixed
+
+- account quota cards now explicitly label values as remaining percentage
+- credential-level `primary` is preferred over namespaced model/additional-limit windows such as `bengalfox primary`
+- account detail rows and the whale bubble now use the same Primary-window selection logic
+
 ## v0.3.0 — 2026-08-30
 
 First generalized open-source-ready bundle. Client, plugin and administration tool now share one release version.

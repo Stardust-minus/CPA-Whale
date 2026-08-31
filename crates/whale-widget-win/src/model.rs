@@ -575,18 +575,11 @@ fn quota_card(snapshot: Option<&GlobalSnapshot>) -> RandomCard {
     let best = snapshot
         .accounts
         .iter()
-        .filter(|account| account.quota.available)
-        .flat_map(|account| {
-            account
-                .quota
-                .windows
-                .iter()
-                .filter_map(|window| window.remaining_percent)
-        })
+        .filter_map(account_primary_remaining_percent)
         .min_by(f64::total_cmp);
     if let Some(remaining) = best {
         RandomCard::Lines([
-            Some(CardLine::new("账户最低额度", CardStyle::Label)),
+            Some(CardLine::new("账户最低剩余", CardStyle::Label)),
             Some(
                 CardLine::new(format!("{remaining:.0}%"), CardStyle::Period).tone(
                     if remaining < 15.0 {
@@ -605,6 +598,29 @@ fn quota_card(snapshot: Option<&GlobalSnapshot>) -> RandomCard {
             None,
         ])
     }
+}
+
+pub fn account_primary_remaining_percent(account: &whale_protocol::AccountSnapshot) -> Option<f64> {
+    if !account.quota.available {
+        return None;
+    }
+    account
+        .quota
+        .windows
+        .iter()
+        .filter(|window| window.name.eq_ignore_ascii_case("primary"))
+        .filter(|window| window.remaining_percent.is_some())
+        .max_by_key(|window| window.window_minutes.unwrap_or_default())
+        .and_then(|window| window.remaining_percent)
+        .or_else(|| {
+            account
+                .quota
+                .windows
+                .iter()
+                .filter(|window| window.window_minutes.unwrap_or_default() > 0)
+                .filter_map(|window| window.remaining_percent)
+                .min_by(f64::total_cmp)
+        })
 }
 
 fn reset_card(snapshot: Option<&GlobalSnapshot>) -> RandomCard {
@@ -1084,6 +1100,48 @@ mod tests {
     }
 
     #[test]
+    fn account_remaining_prefers_account_primary_over_additional_limits() {
+        let account = whale_protocol::AccountSnapshot {
+            auth_index: "account".into(),
+            label: "Account".into(),
+            provider: "codex".into(),
+            status: "active".into(),
+            unavailable: false,
+            totals: whale_protocol::UsageTotals::default(),
+            quota: whale_protocol::QuotaSnapshot {
+                available: true,
+                windows: vec![
+                    whale_protocol::QuotaWindow {
+                        name: "bengalfox primary".into(),
+                        limit_name: Some("Model Limit".into()),
+                        used_percent: Some(80.0),
+                        remaining_percent: Some(20.0),
+                        window_minutes: Some(300),
+                        reset_after_seconds: None,
+                        reset_at: None,
+                        allowed: Some(true),
+                        limit_reached: Some(false),
+                    },
+                    whale_protocol::QuotaWindow {
+                        name: "primary".into(),
+                        limit_name: None,
+                        used_percent: Some(25.0),
+                        remaining_percent: Some(75.0),
+                        window_minutes: Some(10_080),
+                        reset_after_seconds: None,
+                        reset_at: None,
+                        allowed: Some(true),
+                        limit_reached: Some(false),
+                    },
+                ],
+                ..whale_protocol::QuotaSnapshot::default()
+            },
+            updated_at: None,
+        };
+        assert_eq!(account_primary_remaining_percent(&account), Some(75.0));
+    }
+
+    #[test]
     fn legacy_capabilities_keep_all_available_quota_providers() {
         let mut snapshot = GlobalSnapshot::empty("epoch", "UTC");
         for provider in ["codex", "xai"] {
@@ -1202,7 +1260,7 @@ mod tests {
     }
 
     #[test]
-    fn entertainment_deck_can_be_clicked_through_before_closing() {
+    fn entertainment_deck_can_be_advanced_before_closing() {
         let settings = ClientSettings::default();
         let mut runtime = RuntimeState::default();
         runtime.open_data_bubble(true);
