@@ -858,6 +858,19 @@ pub fn model_display_name(capabilities: Option<&CapabilitiesResponse>, model: &s
         .unwrap_or_else(|| model.to_string())
 }
 
+pub fn model_detail_row(
+    capabilities: Option<&CapabilitiesResponse>,
+    model: &whale_protocol::ModelUsage,
+) -> String {
+    format!(
+        "{} / {} · {} tokens · {}",
+        model_display_name(capabilities, &model.model),
+        model.reasoning_effort.as_deref().unwrap_or("--"),
+        format_tokens(model.totals.tokens.total_tokens),
+        format_usd(model.totals.estimated_usd_micros)
+    )
+}
+
 pub fn card_enabled(
     settings: &ClientSettings,
     capabilities: Option<&CapabilitiesResponse>,
@@ -1213,6 +1226,42 @@ mod tests {
         );
         let cards = build_entertainment_deck(1, &settings, Some(&capabilities), None, None, None);
         assert_eq!(cards.len(), 1);
+    }
+
+    #[test]
+    fn configured_model_names_match_in_bubbles_and_details() {
+        for (model, display_name) in [
+            ("gpt-5.6-sol", "Sol"),
+            ("gpt-5.6-terra", "Terra"),
+            ("gpt-5.6-luna", "Luna"),
+            ("gpt-6-astra", "Astra"),
+            ("gpt-6-astra", "Custom Astra"),
+        ] {
+            let mut snapshot = GlobalSnapshot::empty("epoch", "UTC");
+            snapshot.models.push(whale_protocol::ModelUsage {
+                provider: "codex".into(),
+                model: model.into(),
+                reasoning_effort: Some("xhigh".into()),
+                totals: whale_protocol::UsageTotals::default(),
+            });
+            let mut capabilities = legacy_capabilities(&snapshot);
+            capabilities.models[0].display_name = display_name.into();
+            assert!(model_detail_row(Some(&capabilities), &snapshot.models[0])
+                .starts_with(&format!("{display_name} / xhigh · ")));
+            let RandomCard::Lines(lines) =
+                model_distribution_card(Some(&capabilities), Some(&snapshot))
+            else {
+                panic!("model distribution must display text");
+            };
+            assert!(lines[0]
+                .as_ref()
+                .unwrap()
+                .text
+                .starts_with(&format!("{display_name}  ")));
+            assert!(model_detail_row(None, &snapshot.models[0])
+                .starts_with(&format!("{model} / xhigh · ")));
+            assert_eq!(snapshot.models[0].model, model);
+        }
     }
 
     #[test]

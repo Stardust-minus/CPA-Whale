@@ -6,11 +6,11 @@
 
 CPA Whale 是一个独立、低占用的 Windows 原生桌面挂件，用鲸鱼气泡展示 [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI) 的用量、模型、账户额度和可选外部信号。
 
-当前开发版本：**v0.3.2**
+当前开发版本：**v0.3.3**
 
-- Windows 原生客户端：v0.3.2
-- CLIProxyAPI 动态插件：v0.3.2
-- Linux 部署管理工具：v0.3.2
+- Windows 原生客户端：v0.3.3
+- CLIProxyAPI 动态插件：v0.3.3
+- Linux 部署管理工具：v0.3.3
 - Snapshot API schema：v1
 - Capabilities schema：v1
 - Plugin config schema：v2
@@ -153,7 +153,7 @@ CPA_WHALE_PLUGIN=target/release/libcpa_whale_plugin.so python3 tests/abi_harness
 python3 scripts/check-public-tree.py
 ```
 
-CI 定义见 [`.github/workflows/ci.yml`](.github/workflows/ci.yml)：每次 push/PR 都运行测试并上传三平台构建产物。推送与 workspace 版本一致的 tag（例如 `v0.3.2`）会触发 [`.github/workflows/release.yml`](.github/workflows/release.yml)，再次执行测试、ABI/PE/secret 检查并发布 GitHub Release、版本化二进制、bundle、manifest 和 checksums。
+CI 定义见 [`.github/workflows/ci.yml`](.github/workflows/ci.yml)：每次 push/PR 都运行测试并上传三平台构建产物。推送与 workspace 版本一致的 tag（例如 `v0.3.3`）会触发 [`.github/workflows/release.yml`](.github/workflows/release.yml)，再次执行测试、ABI/PE/secret 检查并发布 GitHub Release、版本化二进制、bundle、manifest 和 checksums。
 
 ## 部署
 

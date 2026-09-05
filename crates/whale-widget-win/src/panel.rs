@@ -14,7 +14,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::*;
 use crate::graphics::{DataSettingsPanelData, DetailsPanelData, MenuPanelData, PanelRenderer};
 use crate::model::{
     account_primary_remaining_percent, card_enabled, estimated_today_usd_micros, format_tokens,
-    format_usd, model_display_name, ClientSettings,
+    format_usd, model_detail_row, model_display_name, ClientSettings,
 };
 
 pub const WM_MENU_ACTION: u32 = WM_APP + 30;
@@ -88,6 +88,7 @@ struct DetailsState {
     today_tokens: String,
     today_usd: String,
     startup_tokens: String,
+    capabilities: Option<CapabilitiesResponse>,
     snapshot: Option<GlobalSnapshot>,
     page: usize,
     hardware_accelerated: bool,
@@ -169,6 +170,7 @@ pub unsafe fn show_menu(
 /// `parent` must be a live widget window owned by this process.
 pub unsafe fn show_details(
     parent: HWND,
+    capabilities: Option<&CapabilitiesResponse>,
     snapshot: Option<&GlobalSnapshot>,
     startup: Option<&UsageDelta>,
     hardware_accelerated: bool,
@@ -217,6 +219,7 @@ pub unsafe fn show_details(
         today_tokens,
         today_usd,
         startup_tokens,
+        capabilities: capabilities.cloned(),
         snapshot: snapshot.cloned(),
         page: 0,
         hardware_accelerated,
@@ -786,15 +789,7 @@ fn details_rows(state: &DetailsState) -> Vec<String> {
         1 => snapshot
             .models
             .iter()
-            .map(|model| {
-                format!(
-                    "{} / {} · {} tokens · {}",
-                    model.model,
-                    model.reasoning_effort.as_deref().unwrap_or("--"),
-                    format_tokens(model.totals.tokens.total_tokens),
-                    format_usd(model.totals.estimated_usd_micros)
-                )
-            })
+            .map(|model| model_detail_row(state.capabilities.as_ref(), model))
             .collect(),
         2 => snapshot
             .accounts

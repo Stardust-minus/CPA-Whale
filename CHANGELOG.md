@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.3.3 — 2026-09-05
+
+Windows client patch for consistent model display names.
+
+### Fixed
+
+- model detail rows now use capability-provided display names, matching the whale bubble and data settings; configured names such as Astra no longer fall back to raw model IDs in the details panel
+- regression coverage for Sol, Terra, Luna, Astra and custom display names, while preserving the actual model IDs
+
+### Compatibility
+
+- update the Windows client for the details-panel fix; the server plugin does not need an upgrade
+- model display names still come from server configuration; for Astra, use `display-name: Astra` in its pricing rate or map `gpt-6-astra: Astra` under `instance.model-display-names`, then reconfigure/reload the plugin and refresh widget data
+- this release does not modify deployed configuration, pricing or historical usage
+
 ## v0.3.2 — 2026-09-05
 
 Configuration-only support for GPT-6 Astra; runtime behavior is unchanged.

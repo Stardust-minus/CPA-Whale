@@ -378,6 +378,7 @@ impl App {
         if let Err(error) = unsafe {
             panel::show_details(
                 self.hwnd,
+                self.runtime.capabilities.as_ref(),
                 self.runtime.snapshot.as_ref(),
                 self.runtime.startup_delta.as_ref(),
                 hardware,

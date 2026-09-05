@@ -37,9 +37,9 @@ Linux operator
 
 ## Version boundaries
 
-CPA Whale v0.3.2 uses separate compatibility numbers:
+CPA Whale v0.3.3 uses separate compatibility numbers:
 
-- application bundle version: `0.3.2`
+- application bundle version: `0.3.3`
 - CPA plugin C ABI: `1`
 - CPA JSON lifecycle schema: `4`
 - snapshot API schema: `1`

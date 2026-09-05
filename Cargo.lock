@@ -129,7 +129,7 @@ checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
 
 [[package]]
 name = "cpa-whale-admin"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "base64",
  "serde",
@@ -141,7 +141,7 @@ dependencies = [
 
 [[package]]
 name = "cpa-whale-plugin"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "base64",
  "chrono",
@@ -1137,7 +1137,7 @@ checksum = "a28ac98ddc8b9274cb41bb4d9d4d5c425b6020c50c46f25559911905610b4a88"
 
 [[package]]
 name = "whale-core"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -1147,7 +1147,7 @@ dependencies = [
 
 [[package]]
 name = "whale-protocol"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "chrono",
  "serde",
@@ -1155,7 +1155,7 @@ dependencies = [
 
 [[package]]
 name = "whale-widget-win"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "base64",
  "chrono",
