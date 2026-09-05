@@ -1,0 +1,17 @@
+# Optional pricing fragment using user-supplied OpenAI Flex equivalents (2026-09-05).
+# These are estimates, not invoices or automatically detected service-tier prices.
+# Append this rate to existing pricing.rates; preserve other models and update version.
+pricing:
+  version: gpt-6-astra-flex-user-2026-09-05
+  rates:
+    # Exact model ID across providers; add provider: codex to limit the match.
+    - models: [gpt-6-astra]
+      display-name: Astra
+      priority: 10
+      input-usd-per-million: 5.0
+      cache-read-usd-per-million: 0.5
+      # No separate cache-write price supplied; estimate at the input rate.
+      cache-write-usd-per-million: 5.0
+      output-usd-per-million: 25.0
+      # Reasoning is part of output, not an extra charge on top of output tokens.
+      reasoning-usd-per-million: 25.0

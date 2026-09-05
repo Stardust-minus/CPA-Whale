@@ -187,6 +187,7 @@ def main():
             "      url: https://example.invalid/reset-events\n"
             "      tool-filter: codex\n"
             "      interval-seconds: 1800\n"
+            + (ROOT / "deploy/pricing-gpt-6-astra.example.yaml").read_text(encoding="utf-8")
         ).encode()
         registration = call(
             plugin,
@@ -216,6 +217,18 @@ def main():
         assert capabilities["schema_version"] == 1
         assert capabilities["features"]["intelligence"] is True
         assert capabilities["features"]["service_status"] is True
+        assert capabilities["features"]["pricing"] is True
+        astra_capabilities = [
+            model for model in capabilities["models"] if model["model"] == "gpt-6-astra"
+        ]
+        assert len(astra_capabilities) == 1
+        assert astra_capabilities[0]["display_name"] == "Astra"
+        assert astra_capabilities[0]["priced"] is True
+
+        astra_usage = json.loads(USAGE.read_bytes())
+        astra_usage["Model"] = "gpt-6-astra"
+        astra_usage["Alias"] = "gpt-6-astra"
+        call(plugin, "usage.handle", astra_usage)
 
         response = call(
             plugin,
@@ -233,7 +246,13 @@ def main():
         snapshot_raw = base64.b64decode(response["Body"])
         snapshot = json.loads(snapshot_raw)
         assert snapshot["scope"] == "global"
-        assert snapshot["today"]["tokens"]["total_tokens"] == 1500
+        assert snapshot["today"]["tokens"]["total_tokens"] == 3000
+        astra_models = [model for model in snapshot["models"] if model["model"] == "gpt-6-astra"]
+        assert len(astra_models) == 1
+        assert astra_models[0]["provider"] == "codex"
+        assert astra_models[0]["reasoning_effort"] == "xhigh"
+        assert astra_models[0]["totals"]["tokens"]["total_tokens"] == 1500
+        assert astra_models[0]["totals"]["estimated_usd_micros"] == 15_700
         assert snapshot["accounts"][0]["label"] == "Codex A"
         assert any(
             signal.get("model") == "gpt-5.6-sol"

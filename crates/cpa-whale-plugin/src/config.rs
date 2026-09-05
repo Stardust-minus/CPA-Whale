@@ -813,6 +813,56 @@ pricing:
     }
 
     #[test]
+    fn astra_flex_example_prices_cached_input_and_reasoning() {
+        let yaml = format!(
+            "config-version: 2\n{}",
+            include_str!("../../../deploy/pricing-gpt-6-astra.example.yaml")
+        );
+        let config = PluginConfig::parse(yaml.as_bytes()).unwrap();
+        assert!(!config.signals.enabled);
+        assert_eq!(config.model_display_name("gpt-6-astra"), "Astra");
+        let catalog = config.price_catalog();
+        assert_eq!(catalog.rates.len(), 1);
+        let rate = &catalog.rates[0];
+        assert_eq!(rate.input_usd_micros_per_million, 5_000_000);
+        assert_eq!(rate.cache_read_usd_micros_per_million, 500_000);
+        assert_eq!(rate.cache_write_usd_micros_per_million, 5_000_000);
+        assert_eq!(rate.output_usd_micros_per_million, 25_000_000);
+        assert_eq!(rate.reasoning_usd_micros_per_million, 25_000_000);
+
+        let tokens = whale_protocol::TokenUsage {
+            input_tokens: 1_000_000,
+            cache_read_tokens: 400_000,
+            cache_write_tokens: 100_000,
+            output_tokens: 500_000,
+            reasoning_tokens: 200_000,
+            total_tokens: 1_500_000,
+            ..whale_protocol::TokenUsage::default()
+        };
+        for provider in ["codex", "openai"] {
+            for effort in [None, Some("xhigh")] {
+                assert!(catalog.has_rate(provider, "gpt-6-astra"));
+                assert_eq!(
+                    catalog.estimate(provider, "gpt-6-astra", "", effort, &tokens),
+                    Some(15_700_000)
+                );
+            }
+        }
+        assert_eq!(
+            catalog.estimate("codex", "upstream-id", "gpt-6-astra", None, &tokens),
+            Some(15_700_000)
+        );
+        assert_eq!(
+            catalog.estimate("codex", "gpt-5.6-sol", "", None, &tokens),
+            None
+        );
+        assert_eq!(
+            catalog.estimate("codex", "gpt-6-astra-other", "", None, &tokens),
+            None
+        );
+    }
+
+    #[test]
     fn rejects_duplicate_token_ids() {
         let error = PluginConfig::parse(
             br#"

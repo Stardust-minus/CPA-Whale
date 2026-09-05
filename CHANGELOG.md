@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.3.2 — 2026-09-05
+
+Configuration-only support for GPT-6 Astra; runtime behavior is unchanged.
+
+### Added
+
+- optional `gpt-6-astra` pricing fragment with the user-supplied OpenAI Flex equivalents: input $5.00/M, output/reasoning $25.00/M, cache read $0.50/M
+- Astra configuration and ABI regression coverage for capability discovery and token cost estimation; no model-specific runtime changes or binary upgrade required
+- deployment instructions for adding Astra without replacing existing model rates or automatically repricing history
+
+### Compatibility
+
+- existing plugin v0.3.0 and Windows client v0.3.1 already support Astra through configuration; this release includes the optional pricing fragment in the bundle
+- append the Astra rate to the deployed pricing catalog and reconfigure/reload the plugin; downloading a new binary alone does not enable pricing
+- existing model rates, client preferences and historical usage are not automatically changed
+
 ## v0.3.1 — 2026-08-31
 
 Patch release for account quota presentation.

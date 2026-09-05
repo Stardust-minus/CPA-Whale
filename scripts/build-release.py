@@ -107,6 +107,7 @@ def main():
         ROOT / "THIRD_PARTY_NOTICES.md",
         ROOT / "deploy" / "plugin-config.example.yaml",
         ROOT / "deploy" / "pricing-gpt-5.6.example.yaml",
+        ROOT / "deploy" / "pricing-gpt-6-astra.example.yaml",
         ROOT / "deploy" / "docker-compose.fragment.yaml",
     ]:
         if source.is_file():

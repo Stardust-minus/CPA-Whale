@@ -6,13 +6,15 @@ Verified development baseline: CLIProxyAPI v7.2.145 with dynamic C-ABI plugin su
 
 ## Release files
 
-A v0.3.1 release bundle contains:
+A v0.3.2 release bundle contains:
 
 ```text
-cpa-whale-plugin-v0.3.1-linux-amd64.so
-cpa-whale-admin-v0.3.1-linux-amd64
-cpa-whale-v0.3.1-windows-x64.exe
+cpa-whale-plugin-v0.3.2-linux-amd64.so
+cpa-whale-admin-v0.3.2-linux-amd64
+cpa-whale-v0.3.2-windows-x64.exe
 plugin-config.example.yaml
+pricing-gpt-5.6.example.yaml
+pricing-gpt-6-astra.example.yaml
 docker-compose.fragment.yaml
 release-manifest.json
 SHA256SUMS
@@ -23,7 +25,7 @@ Verify `SHA256SUMS` before installation. Do not use an unverified `curl | sh` pi
 ## 1. Preflight
 
 ```bash
-./cpa-whale-admin-v0.3.1-linux-amd64 check \
+./cpa-whale-admin-v0.3.2-linux-amd64 check \
   --config /etc/cliproxyapi/config.yaml
 ```
 
@@ -41,7 +43,7 @@ It does not modify the host.
 ## 2. Generate a client token
 
 ```bash
-./cpa-whale-admin-v0.3.1-linux-amd64 token generate \
+./cpa-whale-admin-v0.3.2-linux-amd64 token generate \
   --endpoint https://your-cpa.example
 ```
 
@@ -69,7 +71,7 @@ Removing one entry revokes only that client after plugin reconfiguration/reload.
 ## 3. Render a config fragment
 
 ```bash
-./cpa-whale-admin-v0.3.1-linux-amd64 config render \
+./cpa-whale-admin-v0.3.2-linux-amd64 config render \
   --token-id desktop \
   --token-sha256 "$WHALE_READ_TOKEN_SHA256" \
   --database /var/lib/cliproxyapi/whale/metrics.db \
@@ -92,13 +94,25 @@ Review these fields before activation:
 - pricing catalog
 - external signal sources
 
-Config v2 defaults third-party signals to disabled. The optional GPT-5.6 pricing fragment is [`pricing-gpt-5.6.example.yaml`](pricing-gpt-5.6.example.yaml); use it only if the deployment exposes those exact IDs and accepts those equivalent rates.
+Config v2 defaults third-party signals to disabled. Optional pricing fragments are available for [GPT-5.6](pricing-gpt-5.6.example.yaml) and [GPT-6 Astra](pricing-gpt-6-astra.example.yaml); use them only if the deployment exposes those exact IDs and accepts those equivalent rates.
+
+### Add GPT-6 Astra to an existing deployment
+
+`gpt-6-astra` uses the existing dynamic model discovery and pricing path; plugin v0.3.0 and client v0.3.1 need no binary upgrade for this model.
+
+1. Append the rate from [`pricing-gpt-6-astra.example.yaml`](pricing-gpt-6-astra.example.yaml) to `plugins.configs.cpa-whale.pricing.rates`. Preserve existing Sol/Terra/Luna or other rates; do not replace the entire catalog or add a second `pricing` key.
+2. Update `pricing.version` to identify the combined catalog. The supplied rates are **OpenAI Flex equivalents provided by the deployment owner on 2026-09-05**: input $5.00/M, output $25.00/M, cache read $0.50/M. Reasoning uses the output rate without double charging; cache writes use the input rate as an explicit estimate because no separate rate was supplied. This does not detect or enforce the actual request service tier.
+3. The fragment matches the exact model ID across providers. Add `provider: codex` (or the provider recorded by your CPA) if the estimate should apply only to that provider.
+4. Apply the config through the existing plugin reconfiguration/reload workflow. Restart/reconnect the widget if its model selector still shows cached capabilities, then select **Astra** in data settings. Existing model preferences are preserved.
+5. If an enabled intelligence source has an `include-models` allowlist, append `gpt-6-astra` without removing existing entries. An empty allowlist already accepts all models. Astra intelligence appears only if the source actually publishes a matching model/effort; old-model values are never substituted.
+
+Pricing applies to newly observed requests after reconfiguration. Previously unpriced history is not automatically recalculated.
 
 ## 4. Install the plugin file
 
 ```bash
-sudo ./cpa-whale-admin-v0.3.1-linux-amd64 install \
-  --plugin ./cpa-whale-plugin-v0.3.1-linux-amd64.so \
+sudo ./cpa-whale-admin-v0.3.2-linux-amd64 install \
+  --plugin ./cpa-whale-plugin-v0.3.2-linux-amd64.so \
   --config /etc/cliproxyapi/config.yaml \
   --database /var/lib/cliproxyapi/whale/metrics.db
 ```
@@ -194,7 +208,7 @@ The Management Key is not accepted as a substitute by the Windows client and mus
 
 ```bash
 WHALE_READ_TOKEN='<raw token>' \
-./cpa-whale-admin-v0.3.1-linux-amd64 doctor \
+./cpa-whale-admin-v0.3.2-linux-amd64 doctor \
   --endpoint https://your-cpa.example
 ```
 
@@ -236,7 +250,7 @@ SQLite uses explicit `PRAGMA user_version` migrations. A failed migration reject
 First disable or switch the active plugin through the existing Management workflow. Then:
 
 ```bash
-sudo ./cpa-whale-admin-v0.3.1-linux-amd64 rollback \
+sudo ./cpa-whale-admin-v0.3.2-linux-amd64 rollback \
   --manifest /var/lib/cliproxyapi/whale/install-manifest.json
 ```
 
